@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Number Generator</title>
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-image: url("foto/Background numerik.jpg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      background-color: #ffffff;
+      overflow: hidden;
+    }
+
+    h1 {
+      color: #000000;
+      font-size: 6rem;
+      text-shadow: none;
+      margin-bottom: 20px;
+    }
+
+    .random-number {
+      font-size: 8rem;
+      font-weight: bold;
+      color: #000000;
+      background-color: rgba(212, 212, 212, 0.7);
+      padding: 20px 40px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      letter-spacing: 0.3rem;
+    }
+
+    .congratulations {
+      font-size: 4rem;
+      color: #000000;
+      font-weight: bold;
+      margin-top: 20px;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .fullscreen-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: transparent;
+      color: #000;
+      border: 1px solid #000;
+      border-radius: 5px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .fullscreen-button:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>NOMOR UNDIAN</h1>
+  <div class="random-number" id="randomNumber">0000</div>
+  <div class="congratulations" id="congratulations">SELAMAT!!!</div>
+  <button class="fullscreen-button" onclick="toggleFullScreen()">Fullscreen</button>
+
+  <script>
+    let isAnimating = false;
+
+    function generateRandomNumber() {
+      if (isAnimating) return;
+
+      isAnimating = true;
+      const displayElement = document.getElementById('randomNumber');
+      const congratulationsElement = document.getElementById('congratulations');
+      congratulationsElement.style.opacity = 0;
+
+      const finalNumber = Math.floor(Math.random() * 1001).toString().padStart(4, '0');
+      displayElement.textContent = "0000";
+
+      const spinInterval = setInterval(() => {
+        let randomDisplay = "";
+        for (let i = 0; i < 4; i++) {
+          randomDisplay += Math.floor(Math.random() * 10);
+        }
+        displayElement.textContent = randomDisplay;
+      }, 80);
+
+      setTimeout(() => {
+        clearInterval(spinInterval);
+        displayElement.textContent = finalNumber;
+        isAnimating = false;
+        congratulationsElement.style.opacity = 1;
+      }, 1500);
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // ✅ fix: cegah keluar fullscreen saat pencet spasi
+    document.addEventListener('keydown', (event) => {
+      if (event.key === ' ') {
+        event.preventDefault(); // cegah efek default tombol spasi
+        generateRandomNumber();
+      }
+      if (event.key.toUpperCase() === 'F') {
+        event.preventDefault();
+        toggleFullScreen();
+      }
+    });
+  </script>
+</body>
+</html>
