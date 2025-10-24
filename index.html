@@ -29,7 +29,6 @@
     h1 {
       color: #000000;
       font-size: 6rem;
-      text-shadow: none;
       margin-bottom: 20px;
     }
 
@@ -41,17 +40,7 @@
       padding: 20px 40px;
       border-radius: 10px;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
       letter-spacing: 0.3rem;
-    }
-
-    .congratulations {
-      font-size: 4rem;
-      color: #000000;
-      font-weight: bold;
-      margin-top: 20px;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
     }
 
     .fullscreen-button {
@@ -78,37 +67,35 @@
 <body>
   <h1>NOMOR UNDIAN</h1>
   <div class="random-number" id="randomNumber">0000</div>
-  <div class="congratulations" id="congratulations">SELAMAT!!!</div>
   <button class="fullscreen-button" onclick="toggleFullScreen()">Fullscreen</button>
 
   <script>
     let isAnimating = false;
+    let spinInterval = null;
 
-    function generateRandomNumber() {
+    function startRandom() {
       if (isAnimating) return;
-
       isAnimating = true;
       const displayElement = document.getElementById('randomNumber');
-      const congratulationsElement = document.getElementById('congratulations');
-      congratulationsElement.style.opacity = 0;
 
-      const finalNumber = Math.floor(Math.random() * 1001).toString().padStart(4, '0');
-      displayElement.textContent = "0000";
-
-      const spinInterval = setInterval(() => {
+      // mulai acak angka terus
+      spinInterval = setInterval(() => {
         let randomDisplay = "";
         for (let i = 0; i < 4; i++) {
           randomDisplay += Math.floor(Math.random() * 10);
         }
         displayElement.textContent = randomDisplay;
       }, 80);
+    }
 
-      setTimeout(() => {
-        clearInterval(spinInterval);
-        displayElement.textContent = finalNumber;
-        isAnimating = false;
-        congratulationsElement.style.opacity = 1;
-      }, 5000);
+    function stopRandom() {
+      if (!isAnimating) return;
+      clearInterval(spinInterval);
+      isAnimating = false;
+
+      const displayElement = document.getElementById('randomNumber');
+      const finalNumber = Math.floor(Math.random() * 1001).toString().padStart(4, '0');
+      displayElement.textContent = finalNumber;
     }
 
     function toggleFullScreen() {
@@ -119,11 +106,14 @@
       }
     }
 
-    // ✅ fix: cegah keluar fullscreen saat pencet spasi
     document.addEventListener('keydown', (event) => {
       if (event.key === ' ') {
-        event.preventDefault(); // cegah efek default tombol spasi
-        generateRandomNumber();
+        event.preventDefault();
+        startRandom();
+      }
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        stopRandom();
       }
       if (event.key.toUpperCase() === 'F') {
         event.preventDefault();
@@ -133,5 +123,3 @@
   </script>
 </body>
 </html>
-
-
